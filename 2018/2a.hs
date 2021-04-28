@@ -30,7 +30,7 @@ hasExactOccurs :: Int -> Parser Int
 hasExactOccurs n = Parser f
     where
         f [] = Nothing
-        f xs =  if any (\x -> length x >= n) $ group $ sort xs then Just (1, xs) else Just (0, xs)
+        f xs =  if any (\x -> length x == n) $ group $ sort xs then Just (1, xs) else Just (0, xs)
 
 --checksum :: Parser Int
 --checksum = (*) <$> hasExactOccurs 2 <*> hasExactOccurs 3
