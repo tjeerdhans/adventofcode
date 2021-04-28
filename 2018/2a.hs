@@ -26,6 +26,7 @@ instance Applicative Parser where
     Nothing -> Nothing
     Just (f, rest) -> runParser (fmap f p2) rest
 
+-- Parser for a String that checks if the string has a character that occurs exactly n times.
 hasExactOccurs :: Int -> Parser Int
 hasExactOccurs n = Parser f
     where
