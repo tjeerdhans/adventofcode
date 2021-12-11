@@ -5,6 +5,34 @@ public class DayTwo : Day
     public DayTwo() : base(2, 150, 900)
     {
     }
+    
+    /// <summary>
+    /// Get position.
+    /// </summary>
+    /// <param name="set"></param>
+    /// <returns></returns>
+    protected override long GetFirstAnswer(string[] set)
+    {
+        var hor = 0;
+        var depth = 0;
+        foreach (var c in set)
+        {
+            if (c.StartsWith("forward"))
+            {
+                hor += int.Parse(c[8..]);
+            }
+            else if (c.StartsWith("down"))
+            {
+                depth += int.Parse(c[5..]);
+            }
+            else
+            {
+                depth -= int.Parse(c[3..]);
+            }
+        }
+
+        return hor * depth;
+    }
 
     /// <summary>
     /// Get position using aim.
@@ -31,34 +59,6 @@ public class DayTwo : Day
             else
             {
                 aim -= int.Parse(c[3..]);
-            }
-        }
-
-        return hor * depth;
-    }
-
-    /// <summary>
-    /// Get position.
-    /// </summary>
-    /// <param name="set"></param>
-    /// <returns></returns>
-    protected override long GetFirstAnswer(string[] set)
-    {
-        var hor = 0;
-        var depth = 0;
-        foreach (var c in set)
-        {
-            if (c.StartsWith("forward"))
-            {
-                hor += int.Parse(c[8..]);
-            }
-            else if (c.StartsWith("down"))
-            {
-                depth += int.Parse(c[5..]);
-            }
-            else
-            {
-                depth -= int.Parse(c[3..]);
             }
         }
 

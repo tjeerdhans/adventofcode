@@ -2,7 +2,7 @@ namespace aoc2021;
 
 public abstract class Day
 {
-    private int _dayNumber;
+    private readonly int _dayNumber;
     private readonly long _firstExpected;
     private readonly long _secondExpected;
 
@@ -22,6 +22,7 @@ public abstract class Day
     {
         First();
         Second();
+        Console.WriteLine();
     }
 
     protected abstract long GetFirstAnswer(string[] set);
@@ -35,19 +36,23 @@ public abstract class Day
             Console.WriteLine($"Day {_dayNumber}: first test successful.");
             Console.WriteLine($"Day {_dayNumber}: first answer: {GetFirstAnswer(_set)}");
         }
-
-        Console.WriteLine($"Day {_dayNumber}: first test failed with {result}");
+        else
+        {
+            Console.WriteLine($"Day {_dayNumber}: first test failed with {result}");
+        }
     }
 
     public void Second()
     {
-        var result = GetFirstAnswer(_testSet);
+        var result = GetSecondAnswer(_testSet);
         if (result == _secondExpected)
         {
             Console.WriteLine($"Day {_dayNumber}: second test successful.");
-            Console.WriteLine($"Day {_dayNumber}: second answer: {GetFirstAnswer(_set)}");
+            Console.WriteLine($"Day {_dayNumber}: second answer: {GetSecondAnswer(_set)}");
         }
-
-        Console.WriteLine($"Day {_dayNumber}: second test failed with {result}");
+        else
+        {
+            Console.WriteLine($"Day {_dayNumber}: second test failed with {result}");
+        }
     }
 }
