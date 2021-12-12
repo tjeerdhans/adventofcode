@@ -10,3 +10,5 @@ var dayTwo = new DayTwo();
 dayTwo.Run();
 var dayThree = new DayThree();
 dayThree.Run();
+var dayFour = new DayFour();
+dayFour.Run();
