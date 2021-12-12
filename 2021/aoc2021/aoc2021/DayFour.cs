@@ -2,19 +2,15 @@ namespace aoc2021;
 
 public class DayFour : Day
 {
-    private int[] _numbersDrawn;
-    private List<int[,]> _bingoCards;
-
-    public DayFour() : base(4, 4512, 0)
+    public DayFour() : base(4, 4512, 1924)
     {
     }
-
 
     protected override long GetFirstAnswer(string[] set)
     {
         // parse set
-        _bingoCards = new List<int[,]>();
-        _numbersDrawn = set[0].Split(',').Select(s => Convert.ToInt32(s)).ToArray();
+        var bingoCards = new List<int[,]>();
+        var numbersDrawn = set[0].Split(',').Select(s => Convert.ToInt32(s)).ToArray();
         var currentBingoCardIndex = -1;
         var currentRowIndex = 0;
         foreach (var s in set.Skip(1))
@@ -23,7 +19,7 @@ public class DayFour : Day
             {
                 currentBingoCardIndex++;
                 currentRowIndex = 0;
-                _bingoCards.Add(new int[5, 5]);
+                bingoCards.Add(new int[5, 5]);
                 continue;
             }
 
@@ -31,17 +27,17 @@ public class DayFour : Day
                 .Select(n => Convert.ToInt32(n)).ToArray();
             for (int i = 0; i < 5; i++)
             {
-                _bingoCards[currentBingoCardIndex][currentRowIndex, i] = rowBingoNumbers[i];
+                bingoCards[currentBingoCardIndex][currentRowIndex, i] = rowBingoNumbers[i];
             }
 
             currentRowIndex++;
         }
 
         // run through the drawn numbers, set marked numbers to -1
-        foreach (var n in _numbersDrawn)
+        foreach (var n in numbersDrawn)
         {
-            // check bingocards
-            foreach (var bingoCard in _bingoCards)
+            // check bingo cards
+            foreach (var bingoCard in bingoCards)
             {
                 for (int i = 0; i < 5; i++)
                 {
@@ -51,7 +47,7 @@ public class DayFour : Day
                         {
                             bingoCard[i, j] = -1;
                             var bingoValue = GetBingoValue(bingoCard, i, j);
-                            if (bingoValue!=-1)
+                            if (bingoValue != -1)
                             {
                                 return bingoValue * n;
                             }
@@ -64,7 +60,7 @@ public class DayFour : Day
         return 0;
     }
 
-    private int GetBingoValue(int[,] bingoCard, int row, int column)
+    private static int GetBingoValue(int[,] bingoCard, int row, int column)
     {
         var result = -1;
         var rowSum = 0;
@@ -116,6 +112,69 @@ public class DayFour : Day
 
     protected override long GetSecondAnswer(string[] set)
     {
+        // parse set
+        var bingoCards = new List<int[,]>();
+        var numbersDrawn = set[0].Split(',').Select(s => Convert.ToInt32(s)).ToArray();
+        var currentBingoCardIndex = -1;
+        var currentRowIndex = 0;
+        foreach (var s in set.Skip(1))
+        {
+            if (string.IsNullOrWhiteSpace(s))
+            {
+                currentBingoCardIndex++;
+                currentRowIndex = 0;
+                bingoCards.Add(new int[5, 5]);
+                continue;
+            }
+
+            var rowBingoNumbers = s.Split(' ', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries)
+                .Select(n => Convert.ToInt32(n)).ToArray();
+            for (int i = 0; i < 5; i++)
+            {
+                bingoCards[currentBingoCardIndex][currentRowIndex, i] = rowBingoNumbers[i];
+            }
+
+            currentRowIndex++;
+        }
+
+        // run through the drawn numbers, set marked numbers to -1
+        foreach (var n in numbersDrawn)
+        {
+            // check bingo cards
+            var bingoCardsToCheck = bingoCards.ToList();
+            foreach (var bingoCard in bingoCardsToCheck)
+            {
+                var bingoValue = -1;
+                for (int i = 0; i < 5; i++)
+                {
+                    for (int j = 0; j < 5; j++)
+                    {
+                        if (bingoCard[i, j] == n)
+                        {
+                            bingoCard[i, j] = -1;
+                            bingoValue = GetBingoValue(bingoCard, i, j);
+                            if (bingoValue != -1)
+                            {
+                                //bingoCard.value = bingoValue;
+                                if (bingoCards.Count > 1)
+                                {
+                                    bingoCards.Remove(bingoCard);
+                                    break;
+                                }
+
+                                return bingoValue * n;
+                            }
+                        }
+                    }
+
+                    if (bingoValue != -1)
+                    {
+                        break;
+                    }
+                }
+            }
+        }
+
         return 0;
     }
 }
