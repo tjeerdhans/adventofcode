@@ -1,10 +1,11 @@
+using Accord.Math;
 using Accord.Statistics;
 
 namespace aoc2021;
 
 public class DaySeven : Day
 {
-    public DaySeven() : base(7, 37, 0)
+    public DaySeven() : base(7, 37, 168)
     {
     }
 
@@ -18,6 +19,13 @@ public class DaySeven : Day
 
     protected override long GetSecondAnswer(string[] set)
     {
-        return 0;
+        var positions = set[0].Split(',').Select(n => Convert.ToInt32(n)).ToArray();
+        var average = Convert.ToInt32(Math.Round(positions.Average()));
+        
+        return positions.Sum(n =>
+        {
+            var distance = Math.Abs(n - average);
+            return ((distance * distance) + distance) / 2;
+        });
     }
 }
