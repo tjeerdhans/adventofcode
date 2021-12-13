@@ -14,3 +14,5 @@ var dayFour = new DayFour();
 dayFour.Run();
 var dayFive = new DayFive();
 dayFive.Run();
+var daySix = new DaySix();
+daySix.Run();
