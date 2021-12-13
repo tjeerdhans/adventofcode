@@ -6,7 +6,7 @@ public class DaySix : Day
     {
     }
 
-    private Dictionary<int, long> _newBornOffspringCountCache = new();
+    private readonly Dictionary<int, long> _newBornOffspringCountCache = new();
 
     private long GetFishCount(string[] set, int days)
     {
@@ -25,7 +25,6 @@ public class DaySix : Day
             if (newFish > 0)
             {
                 fish.AddRange(Enumerable.Repeat(8, newFish));
-                //Console.Write($"{day}:{fish.Count} ");
             }
         }
 
@@ -36,7 +35,7 @@ public class DaySix : Day
     {
         var fish = set[0].Split(',').Select(n => Convert.ToInt32(n)).ToList();
         long fishCount = fish.Count;
-        for (int day = 0; day < days; day++)
+        for (int day = 1; day <= days; day++)
         {
             var newFish = 0;
             for (int i = 0; i < fish.Count; i++)
@@ -68,7 +67,7 @@ public class DaySix : Day
             return _newBornOffspringCountCache[days];
         }
 
-        if (days < 6)
+        if (days < 8)
         {
             return 1;
         }
@@ -77,7 +76,8 @@ public class DaySix : Day
         long myOffspringsOffspring = 0;
         for (var i = 1; i <= myOffspring; i++)
         {
-            myOffspringsOffspring += GetNewbornOffspringCount(days - (8 * i));
+            var delta = 2 + (i * 7);
+            myOffspringsOffspring += GetNewbornOffspringCount(days - delta);
         }
 
         var result = 1 + myOffspringsOffspring;
@@ -92,9 +92,6 @@ public class DaySix : Day
 
     protected override long GetSecondAnswer(string[] set)
     {
-        var days = 63;
-        var offspringCount = GetNewbornOffspringCount(days);
-        Console.WriteLine($"{days}: {offspringCount}");
-        return GetFishCount(new[] { "8" }, days);
+        return GetFishCountRecursive(set, 256);
     }
 }
