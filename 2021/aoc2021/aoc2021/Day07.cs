@@ -3,9 +3,9 @@ using Accord.Statistics;
 
 namespace aoc2021;
 
-public class DaySeven : Day
+public class Day07 : Day
 {
-    public DaySeven() : base(7, 37, 168)
+    public Day07() : base(7, 37, 168)
     {
     }
 

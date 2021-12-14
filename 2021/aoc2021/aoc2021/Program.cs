@@ -4,17 +4,5 @@ using aoc2021;
 
 Console.WriteLine("Advent of Code 2021.");
 
-// var dayOne = new DayOne();
-// dayOne.Run();
-// var dayTwo = new DayTwo();
-// dayTwo.Run();
-// var dayThree = new DayThree();
-// dayThree.Run();
-// var dayFour = new DayFour();
-// dayFour.Run();
-// var dayFive = new DayFive();
-// dayFive.Run();
-// var daySix = new DaySix();
-// daySix.Run();
-var daySeven = new DaySeven();
-daySeven.Run();
+var day08 = new Day08();
+day08.Run();

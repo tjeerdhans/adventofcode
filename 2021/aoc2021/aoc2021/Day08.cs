@@ -8,11 +8,16 @@ public class Day08 : Day
 
     protected override long GetFirstAnswer(string[] set)
     {
-        throw new NotImplementedException();
+        var result = set
+            .Select(s =>
+                s.Split('|', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries)[1])
+            .SelectMany(s => s.Split(' '))
+            .Count(s => s.Length is 2 or 3 or 4 or 7);
+        return result;
     }
 
     protected override long GetSecondAnswer(string[] set)
     {
-        throw new NotImplementedException();
+        return 0;
     }
 }
