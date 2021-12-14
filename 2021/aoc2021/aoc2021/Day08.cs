@@ -2,7 +2,7 @@ namespace aoc2021;
 
 public class Day08 : Day
 {
-    public Day08(int dayNumber, long firstExpected, long secondExpected) : base(dayNumber, firstExpected, secondExpected)
+    public Day08() : base(8, 26, 0)
     {
     }
 
