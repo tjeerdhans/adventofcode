@@ -3,9 +3,9 @@ namespace aoc2021;
 /// <summary>
 /// Day 1: Sonar sweep
 /// </summary>
-public class DayOne : Day
+public class Day01 : Day
 {
-    public DayOne(): base(1, 7,5)
+    public Day01(): base(1, 7,5)
     {
       }
 

@@ -1,8 +1,8 @@
 namespace aoc2021;
 
-public class DaySix : Day
+public class Day06 : Day
 {
-    public DaySix() : base(6, 5934, 26984457539)
+    public Day06() : base(6, 5934, 26984457539)
     {
     }
 
