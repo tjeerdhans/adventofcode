@@ -20,12 +20,14 @@ public class DaySeven : Day
     protected override long GetSecondAnswer(string[] set)
     {
         var positions = set[0].Split(',').Select(n => Convert.ToInt32(n)).ToArray();
-        var mean = Convert.ToInt32(Math.Round(positions.Mean()));
-        
-        return positions.Sum(n =>
+        var mean = Convert.ToInt32(positions.Mean());
+
+        var result = Enumerable.Range(mean - 5, 10).Min(m => positions.Sum(n =>
         {
-            var d = Math.Abs(n - mean);
-            return ((d * d) + d) / 2;
-        });
+            var d = Convert.ToInt32(Math.Abs(n - m));
+            return (d * d + d) / 2;
+        }));
+
+        return result;
     }
 }
