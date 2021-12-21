@@ -21,10 +21,19 @@ public class Day09 : Day
     protected override long GetSecondAnswer(string[] set)
     {
         var heightMap = set.Select(s => s.Select(i => int.Parse(i.ToString())).ToArray()).ToArray();
-        var heightMatrix = heightMap.ToMatrix();
-        //heightMatrix.Apply(i => i != 9 ? 0 : 9);
+
 
         var lowPoints = GetLowPoints(heightMap);
+        
+        var heightMatrix = heightMap.ToMatrix();
+        heightMatrix = heightMatrix.Apply(i => i != 9 ? 0 : 9);
+        for (int x = 0; x < heightMatrix.Rows(); x++)
+        {
+            var row = heightMatrix.GetRow(x);
+            Console.Write($"{x:00} ");
+            Console.WriteLine(string.Join(' ', row.Select(i=>i==0?" ":"9")));
+        }
+        
         var basinSizes = new List<int>();
         foreach (var p in lowPoints)
         {
@@ -34,7 +43,8 @@ public class Day09 : Day
         basinSizes.Sort();
         var nineCount = heightMap.Sum(x => x.Count(y => y == 9));
         var basinSum = basinSizes.Sum();
-        Console.WriteLine($"Basin sum + all nines should amount to all of the nodes ({heightMatrix.Length}): {basinSum + nineCount}");
+        Console.WriteLine(
+            $"Basin sum + all nines should amount to all of the nodes ({heightMatrix.Length}): {basinSum + nineCount}");
         return basinSizes.TakeLast(3).Aggregate((result, next) => result * next);
 
         // not 1306692 - too low
@@ -43,46 +53,43 @@ public class Day09 : Day
     private static int GetBasinSize(int[,] map, (int x, int y) lowPoint)
     {
         var baseBasinPoints = GetRowSection(map.GetRow(lowPoint.x), lowPoint.y).ToArray();
-        var result = baseBasinPoints.Length;
+        var result = 0;
         // search above
         var basinPoints = baseBasinPoints;
         for (var x = lowPoint.x - 1; x >= 0; x--)
         {
             var newBasinPoints = new SortedSet<int>();
-            foreach (var point in basinPoints)
+            foreach (var point in basinPoints.Where(p => map[x, p] != 9 && !newBasinPoints.Contains(p)))
             {
-                if (map[x, point] != 9)
+                var rowSection = GetRowSection(map.GetRow(x), point).ToArray();
+                foreach (var p in rowSection)
                 {
-                    if (!newBasinPoints.Contains(point))
-                    {
-                        foreach (var p in GetRowSection(map.GetRow(x), point))
-                        {
-                            newBasinPoints.Add(p);
-                        }
-                    }
+                    newBasinPoints.Add(p);
                 }
+            }
+
+            if (!newBasinPoints.Any())
+            {
+                break;
             }
 
             basinPoints = newBasinPoints.ToArray();
             result += basinPoints.Length;
         }
+        
+        // recheck the base basin row (the one containing the low point)
 
         // search below
         basinPoints = baseBasinPoints;
         for (var x = lowPoint.x + 1; x < map.Rows(); x++)
         {
-            var newBasinPoints = new SortedSet<int>();
-            foreach (var point in basinPoints)
+            var newBasinPoints = new HashSet<int>();
+            foreach (var point in basinPoints.Where(p => map[x, p] != 9 && !newBasinPoints.Contains(p)))
             {
-                if (map[x, point] != 9)
+                var rowSection = GetRowSection(map.GetRow(x), point).ToArray();
+                foreach (var p in rowSection)
                 {
-                    if (!newBasinPoints.Contains(point))
-                    {
-                        foreach (var p in GetRowSection(map.GetRow(x), point))
-                        {
-                            newBasinPoints.Add(p);
-                        }
-                    }
+                    newBasinPoints.Add(p);
                 }
             }
 
@@ -100,28 +107,30 @@ public class Day09 : Day
 
     private static IEnumerable<int> GetRowSection(int[] mapRow, int startIndex)
     {
-        var lowerBoundary = GetBoundary(mapRow, startIndex, -1);
-        var upperBoundary = GetBoundary(mapRow, startIndex, 1);
-        for (int i = lowerBoundary; i <= upperBoundary; i++)
+        var lowerBoundary = 0;
+        for (var y = startIndex - 1; y >= -1; y--)
+        {
+            if (y == -1 || mapRow[y] == 9)
+            {
+                lowerBoundary = y + 1;
+                break;
+            }
+        }
+
+        var upperBoundary = 0;
+        for (var y = startIndex + 1; y <= mapRow.Length; y++)
+        {
+            if (y == mapRow.Length || mapRow[y] == 9)
+            {
+                upperBoundary = y - 1;
+                break;
+            }
+        }
+
+        for (var i = lowerBoundary; i <= upperBoundary; i++)
         {
             yield return i;
         }
-    }
-
-    private static int GetBoundary(int[] mapRow, int startIndex, int direction)
-    {
-        if (startIndex == 0 && direction == -1 || startIndex == mapRow.Length - 1 && direction == 1)
-        {
-            return startIndex;
-        }
-
-        var position = startIndex + direction;
-        if (mapRow[position] == 9)
-        {
-            return startIndex;
-        }
-
-        return GetBoundary(mapRow, position, direction);
     }
 
     private static IEnumerable<(int x, int y)> GetLowPoints(int[][] heightMap)
