@@ -1,6 +1,6 @@
 use itertools::Itertools;
-use std::{error::Error, fs, collections::HashSet};
 use std::collections::HashMap;
+use std::{collections::HashSet, error::Error, fs};
 
 pub fn day01_part1(file_path: &str) -> Result<i32, Box<dyn Error>> {
     let file_text = fs::read_to_string(file_path)?;
@@ -49,7 +49,7 @@ pub fn day02_part1(file_path: &str) -> Result<i32, Box<dyn Error>> {
                     "A" => 3,
                     "B" => 0,
                     "C" => 6,
-                    _ => panic!("derp")
+                    _ => panic!("derp"),
                 }
             }
             "Y" => {
@@ -57,7 +57,7 @@ pub fn day02_part1(file_path: &str) -> Result<i32, Box<dyn Error>> {
                     "A" => 6,
                     "B" => 3,
                     "C" => 0,
-                    _ => panic!("derp")
+                    _ => panic!("derp"),
                 }
             }
             "Z" => {
@@ -65,10 +65,10 @@ pub fn day02_part1(file_path: &str) -> Result<i32, Box<dyn Error>> {
                     "A" => 0,
                     "B" => 6,
                     "C" => 3,
-                    _ => panic!("derp")
+                    _ => panic!("derp"),
                 }
             }
-            _ => panic!("derp")
+            _ => panic!("derp"),
         };
         println!("{:?}", score);
         totalscore += score;
@@ -88,31 +88,34 @@ pub fn day02_part2(file_path: &str) -> Result<i32, Box<dyn Error>> {
         // A rock 1 - B paper 2 - C scissors 3
         // X lose     Y draw      Z win
         let score = match me {
-            "X" => { // lose
+            "X" => {
+                // lose
                 match opponent {
                     "A" => 3,
                     "B" => 1,
                     "C" => 2,
-                    _ => panic!("derp")
+                    _ => panic!("derp"),
                 }
             }
-            "Y" => { // draw
+            "Y" => {
+                // draw
                 3 + match opponent {
                     "A" => 1,
                     "B" => 2,
                     "C" => 3,
-                    _ => panic!("derp")
+                    _ => panic!("derp"),
                 }
             }
-            "Z" => { // win
+            "Z" => {
+                // win
                 6 + match opponent {
                     "A" => 2,
                     "B" => 3,
                     "C" => 1,
-                    _ => panic!("derp")
+                    _ => panic!("derp"),
                 }
             }
-            _ => panic!("derp")
+            _ => panic!("derp"),
         };
         //println!("{:?}", score);
         totalscore += score;
@@ -128,18 +131,23 @@ pub fn day03_part1(file_path: &str) -> Result<i32, Box<dyn Error>> {
     println!("no of rucksacks: {}", rucksacks.len());
     for r in rucksacks {
         let compartment_size = r.len() / 2;
-        if r.len() % 2 != 0 { println!("size {} in {}", compartment_size, r); }
+        if r.len() % 2 != 0 {
+            println!("size {} in {}", compartment_size, r);
+        }
         let compartment1: HashSet<char> = HashSet::from_iter(r[..compartment_size].chars());
         let compartment2: HashSet<char> = HashSet::from_iter(r[compartment_size..].chars());
 
         let shared_items: HashSet<_> = compartment1.intersection(&compartment2).collect();
         if shared_items.len() != 1 {
-            println!("{:?} in {} 1: {:?} 2: {:?}", shared_items, r, compartment1, compartment2)
+            println!(
+                "{:?} in {} 1: {:?} 2: {:?}",
+                shared_items, r, compartment1, compartment2
+            )
         }
         for item in shared_items {
             let prio = match item.is_ascii_lowercase() {
                 true => (*item as i32) % 96,
-                false => 26 + ((*item as i32) % 64)
+                false => 26 + ((*item as i32) % 64),
             };
             println!("{}({}):{:?}", item, *item as i32, prio);
             prio_sum += prio;
@@ -167,7 +175,7 @@ pub fn day03_part2(file_path: &str) -> Result<i32, Box<dyn Error>> {
         for item in badge_set {
             let prio = match item.is_ascii_lowercase() {
                 true => (*item as i32) % 96,
-                false => 26 + ((*item as i32) % 64)
+                false => 26 + ((*item as i32) % 64),
             };
             println!("{}({}):{:?}", item, *item as i32, prio);
             prio_sum += prio;
@@ -184,11 +192,18 @@ pub fn day04_part1(file_path: &str) -> Result<i32, Box<dyn Error>> {
     let mut count = 0;
     for pair in pairs {
         let assignments = pair.split(',').collect::<Vec<&str>>();
-        let first: Vec<u8> = assignments[0].split('-').map(|i| i.parse::<u8>().unwrap()).collect();
-        let second: Vec<u8> = assignments[1].split('-').map(|i| i.parse::<u8>().unwrap()).collect();
+        let first: Vec<u8> = assignments[0]
+            .split('-')
+            .map(|i| i.parse::<u8>().unwrap())
+            .collect();
+        let second: Vec<u8> = assignments[1]
+            .split('-')
+            .map(|i| i.parse::<u8>().unwrap())
+            .collect();
 
-        if (first[0] <= second[0] && first[1] >= second[1]) ||
-            (first[0] >= second[0] && first[1] <= second[1]) {
+        if (first[0] <= second[0] && first[1] >= second[1])
+            || (first[0] >= second[0] && first[1] <= second[1])
+        {
             count += 1;
         }
     }
@@ -202,8 +217,14 @@ pub fn day04_part2(file_path: &str) -> Result<i32, Box<dyn Error>> {
     let mut count = 0;
     for pair in pairs {
         let assignments = pair.split(',').collect::<Vec<&str>>();
-        let first: Vec<u8> = assignments[0].split('-').map(|i| i.parse::<u8>().unwrap()).collect();
-        let second: Vec<u8> = assignments[1].split('-').map(|i| i.parse::<u8>().unwrap()).collect();
+        let first: Vec<u8> = assignments[0]
+            .split('-')
+            .map(|i| i.parse::<u8>().unwrap())
+            .collect();
+        let second: Vec<u8> = assignments[1]
+            .split('-')
+            .map(|i| i.parse::<u8>().unwrap())
+            .collect();
 
         // easier to check for no overlap (to me, in any case)
         if !(first[1] < second[0] || second[1] < first[0]) {
@@ -214,7 +235,7 @@ pub fn day04_part2(file_path: &str) -> Result<i32, Box<dyn Error>> {
     Ok(count)
 }
 
-pub fn day05_part1(file_path: &str) -> Result<i32, Box<dyn Error>> {
+pub fn day05_part1(file_path: &str) -> Result<String, Box<dyn Error>> {
     let file_text = fs::read_to_string(file_path)?;
     let lines = file_text.trim().lines().collect::<Vec<&str>>();
     // get number of stacks
@@ -223,31 +244,50 @@ pub fn day05_part1(file_path: &str) -> Result<i32, Box<dyn Error>> {
     let mut stacks: HashMap<usize, Vec<char>> = HashMap::new();
 
     // build the stacks
-    for line in lines.iter().take_while(|l| !l.starts_with(' ')).cloned().collect::<Vec<&str>>() {
+    for line in lines
+        .iter()
+        .take_while(|l| !l.starts_with(' '))
+        .cloned()
+        .collect::<Vec<&str>>()
+    {
         for stack_index in 0..stack_count {
             let c = line.as_bytes()[(stack_index * 4) + 1] as char;
             if !c.is_ascii_whitespace() {
-                stacks.entry(stack_index).or_insert(vec![]).insert(0, c);
+                stacks.entry(stack_index).or_default().insert(0, c);
             }
         }
     }
 
     // move stuff around
-    for line in lines.iter().skip_while(|l| !l.starts_with(' ')).skip(2).cloned().collect::<Vec<&str>>() {
+    for line in lines
+        .iter()
+        .skip_while(|l| !l.starts_with(' '))
+        .skip(2)
+        .cloned()
+        .collect::<Vec<&str>>()
+    {
         // split by " from "
-        let segments= line.split(" from ").collect::<Vec<&str>>();
-        let amount = segments[0].split_whitespace().collect::<Vec<&str>>()[1].parse::<i32>().unwrap();
+        let segments = line.split(" from ").collect::<Vec<&str>>();
+        let amount = segments[0].split_whitespace().collect::<Vec<&str>>()[1].parse::<i32>()?;
+        // split by " to "
         let from_to = segments[1].split(" to ").collect::<Vec<&str>>();
-        let from = from_to[0].parse::<i32>().unwrap();
-        let to = from_to[1].parse::<i32>().unwrap();
+        let from = from_to[0].parse::<usize>()? - 1;
+        let to = from_to[1].parse::<usize>()? - 1;
 
-
-
+        for _ in 0..amount {
+            let c = stacks.entry(from).or_default().pop().unwrap();
+            stacks.entry(to).or_default().push(c);
+        }
     }
 
-    Ok(42)
+    // get the top crates on the stacks
+    let result = stacks
+        .iter()
+        .map(|(_, stack)| stack.last().unwrap().clone())
+        .collect::<String>();
+    Ok(result)
 }
 
-pub fn day05_part2(file_path: &str) -> Result<i32, Box<dyn Error>> {
-    Ok(42)
+pub fn day05_part2(file_path: &str) -> Result<String, Box<dyn Error>> {
+    Ok("Derp".to_string())
 }
