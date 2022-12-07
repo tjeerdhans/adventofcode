@@ -9,18 +9,18 @@ fn test_day05_part1_sample_input() {
 #[test]
 fn test_day05_part1() {
     let result = day05_part1("input05.txt");
-    assert_eq!(result.unwrap(), "CMZ".to_string())
+    assert_eq!(result.unwrap(), "LBLVVTVLP".to_string())
 }
 
 #[test]
 fn test_day05_part2_sample_input() {
     let result = day05_part2("input05_test.txt");
-    assert_eq!(result.unwrap(), "CMZ".to_string())
+    assert_eq!(result.unwrap(), "MCD".to_string())
 }
 
 #[test]
 fn test_day05_part2() {
     let result = day05_part2("input05.txt");
-    assert_eq!(result.unwrap(), "CMZ".to_string())
+    assert_eq!(result.unwrap(), "TPFFBDRJD".to_string())
 }
 

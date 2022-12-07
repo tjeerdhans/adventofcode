@@ -1,5 +1,6 @@
 use itertools::Itertools;
 use std::collections::HashMap;
+use std::vec;
 use std::{collections::HashSet, error::Error, fs};
 
 pub fn day01_part1(file_path: &str) -> Result<i32, Box<dyn Error>> {
@@ -237,43 +238,55 @@ pub fn day04_part2(file_path: &str) -> Result<i32, Box<dyn Error>> {
 
 pub fn day05_part1(file_path: &str) -> Result<String, Box<dyn Error>> {
     let file_text = fs::read_to_string(file_path)?;
-    let lines = file_text.trim().lines().collect::<Vec<&str>>();
+    let lines = file_text.lines().collect::<Vec<&str>>();
     // get number of stacks
-    let stack_line = lines.iter().find(|l| l.starts_with(' ')).unwrap();
-    let stack_count = (stack_line.len() - 2) / 4;
+    let stack_line = lines.iter().find(|l| l.starts_with(" 1")).unwrap();
+    let stack_count = (stack_line.len() + 2) / 4;
+    println!(
+        "stack_line ({}): {} stack_count: {}",
+        stack_line.len(),
+        stack_line,
+        stack_count
+    );
     let mut stacks: HashMap<usize, Vec<char>> = HashMap::new();
 
     // build the stacks
     for line in lines
         .iter()
-        .take_while(|l| !l.starts_with(' '))
+        .take_while(|l| !l.starts_with(" 1"))
         .cloned()
         .collect::<Vec<&str>>()
     {
+        println!("({}):{}", line.len(), line);
         for stack_index in 0..stack_count {
+            if line.len() < (stack_index * 4) + 1 {
+                break;
+            }
             let c = line.as_bytes()[(stack_index * 4) + 1] as char;
             if !c.is_ascii_whitespace() {
                 stacks.entry(stack_index).or_default().insert(0, c);
             }
         }
     }
+    println!("{:?}", stacks);
 
     // move stuff around
     for line in lines
         .iter()
-        .skip_while(|l| !l.starts_with(' '))
+        .skip_while(|l| !l.starts_with(" 1"))
         .skip(2)
         .cloned()
         .collect::<Vec<&str>>()
     {
         // split by " from "
         let segments = line.split(" from ").collect::<Vec<&str>>();
+        println!("segments: {:?}", segments);
         let amount = segments[0].split_whitespace().collect::<Vec<&str>>()[1].parse::<i32>()?;
         // split by " to "
         let from_to = segments[1].split(" to ").collect::<Vec<&str>>();
         let from = from_to[0].parse::<usize>()? - 1;
         let to = from_to[1].parse::<usize>()? - 1;
-
+        println!("{line}");
         for _ in 0..amount {
             let c = stacks.entry(from).or_default().pop().unwrap();
             stacks.entry(to).or_default().push(c);
@@ -283,11 +296,110 @@ pub fn day05_part1(file_path: &str) -> Result<String, Box<dyn Error>> {
     // get the top crates on the stacks
     let result = stacks
         .iter()
+        .sorted()
         .map(|(_, stack)| stack.last().unwrap().clone())
         .collect::<String>();
     Ok(result)
 }
 
 pub fn day05_part2(file_path: &str) -> Result<String, Box<dyn Error>> {
-    Ok("Derp".to_string())
+    let file_text = fs::read_to_string(file_path)?;
+    let lines = file_text.lines().collect::<Vec<&str>>();
+    // get number of stacks
+    let stack_line = lines.iter().find(|l| l.starts_with(" 1")).unwrap();
+    let stack_count = (stack_line.len() + 2) / 4;
+    println!(
+        "stack_line ({}): {} stack_count: {}",
+        stack_line.len(),
+        stack_line,
+        stack_count
+    );
+    let mut stacks: HashMap<usize, Vec<char>> = HashMap::new();
+
+    // build the stacks
+    for line in lines
+        .iter()
+        .take_while(|l| !l.starts_with(" 1"))
+        .cloned()
+        .collect::<Vec<&str>>()
+    {
+        println!("({}):{}", line.len(), line);
+        for stack_index in 0..stack_count {
+            if line.len() < (stack_index * 4) + 1 {
+                break;
+            }
+            let c = line.as_bytes()[(stack_index * 4) + 1] as char;
+            if !c.is_ascii_whitespace() {
+                stacks.entry(stack_index).or_default().insert(0, c);
+            }
+        }
+    }
+    println!("{:?}", stacks);
+
+    // move stuff around
+    for line in lines
+        .iter()
+        .skip_while(|l| !l.starts_with(" 1"))
+        .skip(2)
+        .cloned()
+        .collect::<Vec<&str>>()
+    {
+        // split by " from "
+        let segments = line.split(" from ").collect::<Vec<&str>>();
+        println!("segments: {:?}", segments);
+        let amount = segments[0].split_whitespace().collect::<Vec<&str>>()[1].parse::<i32>()?;
+        // split by " to "
+        let from_to = segments[1].split(" to ").collect::<Vec<&str>>();
+        let from = from_to[0].parse::<usize>()? - 1;
+        let to = from_to[1].parse::<usize>()? - 1;
+        println!("{line}");
+        let mut swap_stack = vec![];
+        for _ in 0..amount {
+            let c = stacks.entry(from).or_default().pop().unwrap();
+            swap_stack.insert(0, c);
+        }
+        stacks.entry(to).or_default().append(&mut swap_stack)
+    }
+
+    // get the top crates on the stacks
+    let result = stacks
+        .iter()
+        .sorted()
+        .map(|(_, stack)| stack.last().unwrap().clone())
+        .collect::<String>();
+    Ok(result)
+}
+
+pub fn day06_part1(file_path: &str) -> Result<i32, Box<dyn Error>> {
+    let file_text = fs::read_to_string(file_path)?;
+    let windows = file_text.as_bytes().windows(4);
+    let mut start_of_packet_marker = 4;
+    for w in windows {
+        if w.iter().unique().count()==4 {
+            break;
+        }
+        start_of_packet_marker += 1;
+    }
+    Ok(start_of_packet_marker)
+}
+
+pub fn day06_part2(file_path: &str) -> Result<i32, Box<dyn Error>> {
+    let file_text = fs::read_to_string(file_path)?;
+    let windows = file_text.as_bytes().windows(14);
+    let mut start_of_packet_marker = 14;
+    for w in windows {
+        if w.iter().unique().count()==14 {
+            break;
+        }
+        start_of_packet_marker += 1;
+    }
+    Ok(start_of_packet_marker)
+}
+
+pub fn day07_part1(file_path: &str) -> Result<i32, Box<dyn Error>> {
+    Ok(42)
+}
+
+pub fn day07_part2(file_path: &str) -> Result<i32, Box<dyn Error>> {
+    Ok(42)
 }
