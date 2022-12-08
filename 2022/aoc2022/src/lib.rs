@@ -375,7 +375,7 @@ pub fn day06_part1(file_path: &str) -> Result<i32, Box<dyn Error>> {
     let windows = file_text.as_bytes().windows(4);
     let mut start_of_packet_marker = 4;
     for w in windows {
-        if w.iter().unique().count()==4 {
+        if w.iter().unique().count() == 4 {
             break;
         }
         start_of_packet_marker += 1;
@@ -388,7 +388,7 @@ pub fn day06_part2(file_path: &str) -> Result<i32, Box<dyn Error>> {
     let windows = file_text.as_bytes().windows(14);
     let mut start_of_packet_marker = 14;
     for w in windows {
-        if w.iter().unique().count()==14 {
+        if w.iter().unique().count() == 14 {
             break;
         }
         start_of_packet_marker += 1;
@@ -397,6 +397,60 @@ pub fn day06_part2(file_path: &str) -> Result<i32, Box<dyn Error>> {
 }
 
 pub fn day07_part1(file_path: &str) -> Result<i32, Box<dyn Error>> {
+    let file_text = fs::read_to_string(file_path)?;
+    let lines = file_text.lines();
+    #[derive(Debug)]
+    struct FsNode {
+        name: String,
+        size: usize,
+        content: Vec<FsNode>,
+    }
+    let mut file_system = FsNode {
+        name: "/".to_string(),
+        size: 0,
+        content: vec![],
+    };
+    let mut current_node = file_system;
+    for l in lines {
+        let segments = l.split_whitespace().collect::<Vec<&str>>();
+        match segments[0] {
+            "$" => {
+                // process command
+                let command = segments[1];
+                match command {
+                    "cd" => {
+                        let dir = segments[2];
+                        if dir=="/" {
+                            current_node = file_system;
+                        } else {
+                            current_node = current_node.content.first()
+                        }
+                       
+                    }
+                    "ls" => {}
+                    _ => {}
+                }
+            }
+            "dir" => {
+                // new dir
+                current_node.content.push(FsNode {
+                    content: vec![],
+                    name: segments[1].to_string(),
+                    size: 0,
+                });
+            }
+            _ => {
+                // files
+                let size = segments[0].parse::<usize>()?;
+                current_node.content.push(FsNode {
+                    content: vec![],
+                    name: segments[1].to_string(),
+                    size,
+                });
+                current_node.size += size;
+            }
+        }
+    }
     Ok(42)
 }
 
